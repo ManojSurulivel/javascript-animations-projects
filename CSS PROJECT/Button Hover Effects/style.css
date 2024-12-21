@@ -1,0 +1,58 @@
+/* General Reset */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+  }
+  
+  .button-container {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .btn {
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease; 
+  }
+  .btn.scale {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .btn.scale:hover {
+    transform: scale(1.1);
+    background-color: #45a049;
+  }
+  
+  /* Color Transition Effect */
+  .btn.color {
+    background-color: #008cba;
+    color: white;
+  }
+  
+  .btn.color:hover {
+    background-color: #005f73;
+    color: #ffeead;
+  }
+  
+  /* Shadow Effect */
+  .btn.shadow {
+    background-color: #f44336;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn.shadow:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+  }
+  

@@ -1,0 +1,52 @@
+/* style.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f0f0f0;
+  }
+  
+  .card-container {
+    display: flex;
+    gap: 10px;
+    overflow: hidden;
+    width: 90%;
+  }
+  
+  .card {
+    flex: 1;
+    height: 200px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    text-align: center;
+    line-height: 200px;
+    font-size: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: flex 0.5s ease, transform 0.5s ease;
+    position: relative;
+  }
+  
+  .card.active {
+    flex: 4;
+    transform: scale(1.05);
+  }
+  
+  .card::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .card.active::after {
+    opacity: 1;
+  }
+  

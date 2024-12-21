@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Tooltips</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="tooltip-container">
+    <!-- Tooltip on Text -->
+    <div class="tooltip-wrapper">
+      <span class="tooltip-trigger">Hover over me</span>
+      <div class="tooltip">This is a tooltip for text.</div>
+    </div>
+
+    <!-- Tooltip on Icon -->
+    <div class="tooltip-wrapper">
+      <span class="tooltip-trigger">
+        <i class="icon">?</i>
+      </span>
+      <div class="tooltip">This is a tooltip for an icon.</div>
+    </div>
+
+    <!-- Tooltip Positioned at Bottom -->
+    <div class="tooltip-wrapper">
+      <span class="tooltip-trigger">Hover below</span>
+      <div class="tooltip bottom">This tooltip appears at the bottom.</div>
+    </div>
+  </div>
+</body>
+</html>

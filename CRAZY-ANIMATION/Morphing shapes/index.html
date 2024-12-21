@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morphing Shapes Animation</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #282c34;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="morphCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('morphCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let time = 0;
+
+        function interpolateShapes(t, shape1, shape2) {
+            return shape1.map((point, index) => {
+                return {
+                    x: point.x + (shape2[index].x - point.x) * t,
+                    y: point.y + (shape2[index].y - point.y) * t
+                };
+            });
+        }
+
+        function drawShape(points) {
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'gold';
+            ctx.fill();
+        }
+
+        const square = [
+            { x: 200, y: 200 },
+            { x: 400, y: 200 },
+            { x: 400, y: 400 },
+            { x: 200, y: 400 }
+        ];
+
+        const circle = Array.from({ length: 30 }, (_, i) => {
+            const angle = (i / 30) * 2 * Math.PI;
+            return {
+                x: 300 + 100 * Math.cos(angle),
+                y: 300 + 100 * Math.sin(angle)
+            };
+        });
+
+        const star = [
+            { x: 300, y: 200 },
+            { x: 350, y: 350 },
+            { x: 450, y: 350 },
+            { x: 375, y: 425 },
+            { x: 400, y: 550 },
+            { x: 300, y: 475 },
+            { x: 200, y: 550 },
+            { x: 225, y: 425 },
+            { x: 150, y: 350 },
+            { x: 250, y: 350 }
+        ];
+
+        const shapes = [square, circle, star];
+        let currentShape = 0;
+        let nextShape = 1;
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const t = (Math.sin(time) + 1) / 2; // smooth interpolation
+            const interpolatedShape = interpolateShapes(t, shapes[currentShape], shapes[nextShape]);
+            drawShape(interpolatedShape);
+
+            if (t >= 0.99) {
+                currentShape = nextShape;
+                nextShape = (nextShape + 1) % shapes.length;
+                time = 0; // reset time to avoid skipping shapes
+            }
+
+            time += 0.01;
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

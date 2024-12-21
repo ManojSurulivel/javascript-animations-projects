@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Glow Pulse Animation</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .neon-text {
+            font-size: 4rem;
+            color: #0ff;
+            font-family: 'Arial', sans-serif;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #00f, 0 0 80px #00f;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #00f, 0 0 80px #00f;
+            }
+            50% {
+                text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff, 0 0 80px #00f, 0 0 160px #00f;
+            }
+        }
+
+        .neon-ring {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid;
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 0, 255, 0.8);
+            animation: ringPulse 3s infinite;
+        }
+
+        @keyframes ringPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 0, 255, 0.8);
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.6;
+                box-shadow: 0 0 40px rgba(0, 255, 255, 0.8), 0 0 80px rgba(0, 0, 255, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neon-text">Neon Glow</div>
+    <div class="neon-ring"></div>
+</body>
+</html>

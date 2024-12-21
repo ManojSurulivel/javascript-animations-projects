@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Fire Animation</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fireCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('fireCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const fireWidth = canvas.width;
+        const fireHeight = canvas.height;
+        const firePixels = new Uint8Array(fireWidth * fireHeight);
+        const fireColors = [];
+
+        function createFirePalette() {
+            for (let i = 0; i < 256; i++) {
+                const intensity = i / 256;
+                const r = Math.min(255, intensity * 300);
+                const g = Math.min(255, intensity * 150);
+                const b = Math.min(255, intensity * 50);
+                fireColors[i] = `rgb(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)})`;
+            }
+        }
+
+        function createFireSource() {
+            for (let x = 0; x < fireWidth; x++) {
+                const index = (fireHeight - 1) * fireWidth + x;
+                firePixels[index] = 255;
+            }
+        }
+
+        function updateFire() {
+            for (let y = 1; y < fireHeight; y++) {
+                for (let x = 0; x < fireWidth; x++) {
+                    const index = y * fireWidth + x;
+                    const belowIndex = index - fireWidth;
+                    const decay = Math.floor(Math.random() * 3);
+                    const belowIntensity = firePixels[belowIndex] - decay;
+                    firePixels[index] = Math.max(0, belowIntensity);
+                }
+            }
+        }
+
+        function renderFire() {
+            const imageData = ctx.createImageData(fireWidth, fireHeight);
+
+            for (let y = 0; y < fireHeight; y++) {
+                for (let x = 0; x < fireWidth; x++) {
+                    const index = y * fireWidth + x;
+                    const color = fireColors[firePixels[index]];
+
+                    if (color) {
+                        const [r, g, b] = color
+                            .slice(4, -1)
+                            .split(',')
+                            .map(Number);
+                        const pixelIndex = index * 4;
+                        imageData.data[pixelIndex] = r;
+                        imageData.data[pixelIndex + 1] = g;
+                        imageData.data[pixelIndex + 2] = b;
+                        imageData.data[pixelIndex + 3] = 255; // Alpha
+                    }
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function animate() {
+            updateFire();
+            renderFire();
+            requestAnimationFrame(animate);
+        }
+
+        createFirePalette();
+        createFireSource();
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            createFireSource();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Interactive Tree Growth</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="treeCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('treeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const branches = [];
+
+        class Branch {
+            constructor(x, y, angle, length, depth) {
+                this.x = x;
+                this.y = y;
+                this.angle = angle;
+                this.length = length;
+                this.depth = depth;
+                this.grown = false;
+            }
+
+            draw() {
+                const x2 = this.x + Math.cos(this.angle) * this.length;
+                const y2 = this.y + Math.sin(this.angle) * this.length;
+
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = `hsl(${this.depth * 30}, 70%, 50%)`;
+                ctx.lineWidth = Math.max(1, this.depth);
+                ctx.stroke();
+
+                if (!this.grown) {
+                    this.grow(x2, y2);
+                    this.grown = true;
+                }
+            }
+
+            grow(x2, y2) {
+                if (this.depth > 0) {
+                    const spread = Math.PI / (4 + Math.random() * 2); // Vary branching angles
+                    branches.push(new Branch(x2, y2, this.angle - spread, this.length * (0.6 + Math.random() * 0.2), this.depth - 1));
+                    branches.push(new Branch(x2, y2, this.angle + spread, this.length * (0.6 + Math.random() * 0.2), this.depth - 1));
+                }
+            }
+        }
+
+        function initTree() {
+            branches.length = 0;
+            branches.push(new Branch(canvas.width / 2, canvas.height, -Math.PI / 2, 200, 12)); // Increased size and depth
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            branches.forEach(branch => {
+                branch.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('click', () => {
+            initTree();
+        });
+
+        initTree();
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initTree();
+        });
+    </script>
+</body>
+</html>

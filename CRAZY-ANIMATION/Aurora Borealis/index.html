@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Aurora Borealis Effect</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="auroraCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('auroraCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const colors = [
+            'rgba(173, 216, 230, 0.5)',
+            'rgba(144, 238, 144, 0.5)',
+            'rgba(255, 182, 193, 0.5)',
+            'rgba(123, 104, 238, 0.5)',
+            'rgba(0, 255, 255, 0.5)'
+        ];
+
+        const bands = [];
+
+        class AuroraBand {
+            constructor(x, y) {
+                this.x = x || 0;
+                this.y = y || Math.random() * canvas.height / 2;
+                this.width = canvas.width;
+                this.height = Math.random() * 50 + 100;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.offset = Math.random() * 100;
+                this.speed = Math.random() * 0.5 + 0.2;
+            }
+
+            draw() {
+                const gradient = ctx.createLinearGradient(0, this.y, this.width, this.y + this.height);
+                gradient.addColorStop(0, 'transparent');
+                gradient.addColorStop(0.5, this.color);
+                gradient.addColorStop(1, 'transparent');
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(this.x, this.y + Math.sin(this.offset) * 50, this.width, this.height);
+            }
+
+            update() {
+                this.offset += this.speed;
+            }
+        }
+
+        function createAurora(x, y) {
+            const newBand = new AuroraBand(x, y);
+            bands.push(newBand);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            bands.forEach(band => {
+                band.update();
+                band.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener('click', (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            createAurora(x, y);
+        });
+
+        createAurora(); // Initial aurora
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            bands.length = 0;
+            createAurora();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Clock with Ripple Effect</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        #clock {
+            position: relative;
+            font-size: 5rem;
+            font-weight: bold;
+        }
+
+        .ripple {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            animation: rippleEffect 1s ease-out forwards;
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0.7;
+            }
+            100% {
+                width: 300px;
+                height: 300px;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="clock"></div>
+    <script>
+        const clockElement = document.getElementById('clock');
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            clockElement.textContent = timeString;
+
+            createRipple();
+        }
+
+        function createRipple() {
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple');
+            ripple.style.left = `${Math.random() * window.innerWidth}px`;
+            ripple.style.top = `${Math.random() * window.innerHeight}px`;
+            document.body.appendChild(ripple);
+
+            ripple.addEventListener('animationend', () => {
+                ripple.remove();
+            });
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>

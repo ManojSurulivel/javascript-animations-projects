@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Lava Lamp</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="lavaLampCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('lavaLampCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const blobs = [];
+        const colors = ['rgba(255, 99, 71, 0.8)', 'rgba(0, 255, 127, 0.8)', 'rgba(30, 144, 255, 0.8)', 'rgba(255, 215, 0, 0.8)'];
+
+        class Blob {
+            constructor(x, y, radius, color) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.dx = (Math.random() - 0.5) * 2;
+                this.dy = (Math.random() - 0.5) * 2;
+            }
+
+            update() {
+                this.x += this.dx;
+                this.y += this.dy;
+
+                if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
+                    this.dx *= -1;
+                }
+
+                if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) {
+                    this.dy *= -1;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        function createBlobs(count) {
+            for (let i = 0; i < count; i++) {
+                const radius = Math.random() * 50 + 30;
+                const x = Math.random() * (canvas.width - radius * 2) + radius;
+                const y = Math.random() * (canvas.height - radius * 2) + radius;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                blobs.push(new Blob(x, y, radius, color));
+            }
+        }
+
+        function drawBlobs() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.globalCompositeOperation = 'lighter';
+            for (let blob of blobs) {
+                blob.update();
+                blob.draw();
+            }
+        }
+
+        function animate() {
+            drawBlobs();
+            requestAnimationFrame(animate);
+        }
+
+        createBlobs(10);
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            blobs.length = 0;
+            createBlobs(10);
+        });
+    </script>
+</body>
+</html>

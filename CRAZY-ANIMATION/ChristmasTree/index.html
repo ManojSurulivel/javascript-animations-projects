@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Christmas Tree Animation</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #001a33;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="treeCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('treeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function drawTree(x, y, width, height, levels) {
+            if (levels === 0) return;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x - width / 2, y + height);
+            ctx.lineTo(x + width / 2, y + height);
+            ctx.closePath();
+
+            const gradient = ctx.createLinearGradient(x, y, x, y + height);
+            gradient.addColorStop(0, '#004d00');
+            gradient.addColorStop(1, '#00b300');
+
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            drawTree(x, y + height * 0.7, width * 0.7, height, levels - 1);
+        }
+
+        function drawStar(x, y, size) {
+            ctx.beginPath();
+            ctx.moveTo(x, y - size);
+            for (let i = 1; i <= 5; i++) {
+                const angle = i * (Math.PI * 2) / 5 - Math.PI / 2;
+                ctx.lineTo(x + size * Math.cos(angle), y - size * Math.sin(angle));
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'gold';
+            ctx.fill();
+        }
+
+        function drawOrnaments(treeX, treeY, treeWidth, treeHeight) {
+            for (let i = 0; i < 200; i++) {
+                const ornamentX = treeX + (Math.random() - 0.5) * treeWidth * 1.5;
+                const ornamentY = treeY + Math.random() * treeHeight * 1.5;
+                ctx.beginPath();
+                ctx.arc(ornamentX, ornamentY, Math.random() * 4 + 2, 0, Math.PI * 2);
+                ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                ctx.fill();
+            }
+        }
+
+        function handleMouseClick(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            drawTree(x, y, canvas.width / 10, canvas.height / 4, 5);
+            drawStar(x, y - 20, 15);
+            drawOrnaments(x, y, canvas.width / 10, canvas.height / 4);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const treeX = canvas.width / 2;
+            const treeY = canvas.height / 3;
+            const treeWidth = canvas.width / 10;
+            const treeHeight = canvas.height / 4;
+
+            drawTree(treeX, treeY, treeWidth, treeHeight, 5);
+            drawStar(treeX, treeY - 20, 15);
+            drawOrnaments(treeX, treeY, treeWidth, treeHeight);
+
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener('click', handleMouseClick);
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

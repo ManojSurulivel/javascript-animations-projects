@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Droplet Effect</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: radial-gradient(circle, #1e3c72, #2a5298);
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="rainCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('rainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const raindrops = [];
+
+        class Raindrop {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 3 + 2;
+                this.speedY = Math.random() * 5 + 3;
+                this.splashRadius = 0;
+                this.splashing = false;
+            }
+
+            update() {
+                if (this.splashing) {
+                    this.splashRadius += 2;
+                    if (this.splashRadius > 20) {
+                        this.splashing = false;
+                        this.splashRadius = 0;
+                        this.reset();
+                    }
+                } else {
+                    this.y += this.speedY;
+                    if (this.y > canvas.height) {
+                        this.splashing = true;
+                    }
+                }
+            }
+
+            draw() {
+                if (this.splashing) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, canvas.height, this.splashRadius, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(173, 216, 230, 0.8)';
+                    ctx.fill();
+                }
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -20;
+                this.radius = Math.random() * 3 + 2;
+                this.speedY = Math.random() * 5 + 3;
+            }
+        }
+
+        function createRaindrops() {
+            for (let i = 0; i < 100; i++) {
+                raindrops.push(new Raindrop());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            raindrops.forEach(raindrop => {
+                raindrop.update();
+                raindrop.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        createRaindrops();
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            raindrops.length = 0;
+            createRaindrops();
+        });
+    </script>
+</body>
+</html>
